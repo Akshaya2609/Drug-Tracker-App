@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturer</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+    
+        /* Main Wrapper Styling */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-top: 30px;
+        }
+    
+        .section {
+            background-color: #ffffff;
+            margin: 30px auto;
+            max-width: 600px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        /* Section Titles */
+        h2 {
+            color: #2980b9;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+    
+        /* Form Labels */
+        label {
+            color: #34495e;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            display: block;
+        }
+    
+        /* Input Fields */
+        input, select, textarea {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+    
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+    
+        /* Button Styling */
+        button {
+            background-color: #3498db;
+            color: white;
+            font-size: 1.1em;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+    
+        button:hover {
+            background-color: #2980b9;
+        }
+    
+        /* Output Section */
+        .output {
+            padding: 15px;
+            background-color: #f9fafb;
+            border: 1px solid #ecf0f1;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+            text-align: center;
+        }
+    
+        .output p {
+            font-size: 1.1em;
+            color: #34495e;
+        }
+    
+        .output p strong {
+            color: #2c3e50;
+        }
+    
+        /* Small Screen Adjustments */
+        @media screen and (max-width: 600px) {
+            .section {
+                margin: 15px;
+                padding: 15px;
+            }
+    
+            h1 {
+                font-size: 2em;
+            }
+    
+            h2 {
+                font-size: 1.5em;
+            }
+    
+            input, select, textarea, button {
+                font-size: 1em;
+            }
+    
+            button {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Manufacturer </h1>
+<div class="section">
+
+    <label for="manufacturerName">Manufacturer Name:</label>
+    <input type="text" id="manufacturerName" placeholder="Enter manufacturer name">
+    
+    <label for="drugDetails">Drug Details:</label>
+    <textarea id="drugDetails" placeholder="Enter drug information" rows="3"></textarea>
+    
+    <label for="assignSupplier">Assign Supplier:</label>
+    <select id="assignSupplier">
+        <option value="Supplier1">Vinaya</option>
+        <option value="Supplier2">Janani</option>
+        <option value="Supplier3">Neha</option>
+    </select>
+    
+    <label for="orderIDAdmin">Order ID (Optional for Status Update):</label>
+    <input type="text" id="orderIDAdmin" placeholder="Enter order ID for update">
+    
+    <label for="orderStatus">Update Order Status:</label>
+    <select id="orderStatus">
+        <option value="Order Placed">Order Placed</option>
+        <option value="Dispatched">Dispatched</option>
+        <option value="In Transit">In Transit</option>
+        <option value="Delivered">Delivered</option>
+    </select>
+    
+    <button onclick="addDrugDetails()">Add Drug</button>
+    <p>Update details</p>
+    <button onclick="updateOrderStatus()">Update Order Status</button>
+    <div id="adminOutput" class="output"></div>
+</div>
+
+    <!-- <button onclick="navigateTo('main.html')">Back to Home</button> -->
+    
+    <button onclick="navigateTo('/')">Back To Home </button>
+    <script>
+        function navigateTo(route) {
+            window.location.href = route;
+        }
+        let orders = [];
+
+// Function to place an order
+function placeOrder() {
+    const userName = document.getElementById("userName").value;
+    const drugName = document.getElementById("drugName").value;
+    const supplier = document.getElementById("supplierSelect").value;
+
+    if (!userName || !drugName) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    const orderID = `ORD-${Math.floor(Math.random() * 10000)}`;
+    const orderDetails = {
+        orderID,
+        userName,
+        drugName,
+        supplier,
+        manufacturer: "XYZ Pharma", // Static for simplicity
+        status: "Order Placed",
+        tracking: [
+            { status: "Order Placed", date: new Date().toLocaleString() },
+        ],
+    };
+
+    orders.push(orderDetails);
+    alert(`Order placed successfully! Your Order ID is ${orderID}`);
+}
+
+// Function to track an order
+function trackOrder() {
+    const orderID = document.getElementById("orderID").value;
+
+    const order = orders.find((o) => o.orderID === orderID);
+
+    if (!order) {
+        document.getElementById("trackOutput").innerHTML =
+            "<p style='color:red;'>Order not found!</p>";
+        return;
+    }
+
+    const { userName, drugName, supplier, manufacturer, status, tracking } = order;
+
+    let trackingDetails = tracking
+        .map(
+            (t) =>
+                `<p><strong>Status:</strong> ${t.status} <br><strong>Date:</strong> ${t.date}</p>`
+        )
+        .join("");
+
+    document.getElementById("trackOutput").innerHTML = `
+        <h3>Order Details</h3>
+        <p><strong>Order ID:</strong> ${orderID}</p>
+        <p><strong>User Name:</strong> ${userName}</p>
+        <p><strong>Drug Name:</strong> ${drugName}</p>
+        <p><strong>Supplier:</strong> ${supplier}</p>
+        <p><strong>Manufacturer:</strong> ${manufacturer}</p>
+        <p><strong>Current Status:</strong> ${status}</p>
+        <h4>Tracking Details:</h4>
+        ${trackingDetails}
+    `;
+}
+
+// Simulated tracking updates
+function updateTracking(orderID, newStatus) {
+    const order = orders.find((o) => o.orderID === orderID);
+    if (order) {
+        order.tracking.push({ status: newStatus, date: new Date().toLocaleString() });
+        order.status = newStatus;
+    }
+}
+
+// Simulate updates (For testing purposes)
+setTimeout(() => updateTracking("ORD-1", "Dispatched"), 5000);
+setTimeout(() => updateTracking("ORD-1", "In Transit"), 10000);
+setTimeout(() => updateTracking("ORD-1", "Delivered"), 15000);
+// Admin data storage
+let drugs = [];
+
+// Add drug details function
+function addDrugDetails() {
+    const manufacturerName = document.getElementById("manufacturerName").value;
+    const drugDetails = document.getElementById("drugDetails").value;
+    const assignedSupplier = document.getElementById("assignSupplier").value;
+
+    if (!manufacturerName || !drugDetails || !assignedSupplier) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    const drugEntry = {
+        manufacturerName,
+        drugDetails,
+        assignedSupplier,
+        dateAdded: new Date().toLocaleString(),
+    };
+
+    drugs.push(drugEntry);
+
+    document.getElementById("adminOutput").innerHTML = `
+        <p><strong>Drug Added Successfully!</strong></p>
+        <p>Manufacturer: ${manufacturerName}</p>
+        <p>Drug Details: ${drugDetails}</p>
+        <p>Assigned Supplier: ${assignedSupplier}</p>
+        <p>Date Added: ${drugEntry.dateAdded}</p>
+    `;
+}
+
+// Update order status function
+function updateOrderStatus() {
+    const orderID = document.getElementById("orderIDAdmin").value;
+    const newStatus = document.getElementById("orderStatus").value;
+
+    if (!orderID) {
+        alert("Please enter an Order ID to update!");
+        return;
+    }
+
+    const order = orders.find((o) => o.orderID === orderID);
+
+    if (!order) {
+        document.getElementById("adminOutput").innerHTML =
+            "<p style='color:red;'>Order not found!</p>";
+        return;
+    }
+
+    // Add new status to tracking
+    order.tracking.push({ status: newStatus, date: new Date().toLocaleString() });
+    order.status = newStatus;
+
+    document.getElementById("adminOutput").innerHTML = `
+        <p><strong>Order Status Updated Successfully!</strong></p>
+        <p>Order ID: ${orderID}</p>
+        <p>New Status: ${newStatus}</p>
+        <p>Date Updated: ${new Date().toLocaleString()}</p>
+    `;
+}
+    </script>
+</body>
+</html>

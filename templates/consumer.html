@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Delivery Tracker</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+    
+        /* Main Wrapper Styling */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-top: 20px;
+        }
+    
+        .section {
+            background-color: #ffffff;
+            margin: 20px auto;
+            max-width: 500px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        /* Section Titles */
+        h2 {
+            color: #2980b9;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+    
+        /* Form Labels */
+        label {
+            color: #34495e;
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 5px;
+            display: block;
+        }
+    
+        /* Input Fields */
+        input, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #dcdcdc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+    
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+    
+        /* Buttons */
+        button {
+            background-color: #3498db;
+            color: white;
+            font-size: 1em;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        button:hover {
+            background-color: #2980b9;
+        }
+    
+        /* Output Section */
+        .output {
+            padding: 15px;
+            background-color: #f9fafb;
+            border: 1px solid #ecf0f1;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    
+        /* Small Screen Adjustments */
+        @media screen and (max-width: 600px) {
+            .section {
+                margin: 10px;
+                padding: 15px;
+            }
+    
+            input, select, button {
+                font-size: 0.9em;
+            }
+    
+            h1 {
+                font-size: 2em;
+            }
+    
+            h2 {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Consumer Order Section And Drug Tracker</h1>
+
+    <!-- Order Section -->
+    <div class="section">
+        <h2>Place Order</h2>
+        <label for="userName">Consumer Name:</label>
+        <input type="text" id="userName" placeholder="Enter your name">
+        <label for="drugName">Drug Name:</label>
+        <input type="text" id="drugName" placeholder="Enter drug name">
+        <label for="supplierSelect">Select Supplier:</label>
+        <select id="supplierSelect">
+            <option value="Supplier1">Vinaya</option>
+            <option value="Supplier2">Janani</option>
+            <option value="Supplier3">Neha</option>
+        </select>
+        <button onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <!-- Track Order Section -->
+    <div class="section">
+        <h2>Track Order</h2>
+        <label for="orderID">Enter Order ID:</label>
+        <input type="text" id="orderID" placeholder="Enter your order ID">
+        <button onclick="trackOrder()">Track Order</button>
+        <div id="trackOutput" class="output"></div>
+        <button onclick="navigateTo('/')">Back To Home </button>
+    </div>
+
+    <!-- <button onclick="navigateTo('/')">Back To Home </button> -->
+    <script>
+        function navigateTo(route) {
+            window.location.href = route;
+        }
+        let orders = [];
+
+// Function to place an order
+function placeOrder() {
+    const userName = document.getElementById("userName").value;
+    const drugName = document.getElementById("drugName").value;
+    const supplier = document.getElementById("supplierSelect").value;
+
+    if (!userName || !drugName) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    const orderID = `ORD-${Math.floor(Math.random() * 10000)}`;
+    const orderDetails = {
+        orderID,
+        userName,
+        drugName,
+        supplier,
+        manufacturer: "XYZ Pharma", // Static for simplicity
+        status: "Order Placed",
+        tracking: [
+            { status: "Order Placed", date: new Date().toLocaleString() },
+        ],
+    };
+
+    orders.push(orderDetails);
+    alert(`Order placed successfully! Your Order ID is ${orderID}`);
+}
+
+// Function to track an order
+function trackOrder() {
+    const orderID = document.getElementById("orderID").value;
+
+    const order = orders.find((o) => o.orderID === orderID);
+
+    if (!order) {
+        document.getElementById("trackOutput").innerHTML =
+            "<p style='color:red;'>Order not found!</p>";
+        return;
+    }
+
+    const { userName, drugName, supplier, manufacturer, status, tracking } = order;
+
+    let trackingDetails = tracking
+        .map(
+            (t) =>
+                `<p><strong>Status:</strong> ${t.status} <br><strong>Date:</strong> ${t.date}</p>`
+        )
+        .join("");
+
+    document.getElementById("trackOutput").innerHTML = `
+        <h3>Order Details</h3>
+        <p><strong>Order ID:</strong> ${orderID}</p>
+        <p><strong>User Name:</strong> ${userName}</p>
+        <p><strong>Drug Name:</strong> ${drugName}</p>
+        <p><strong>Supplier:</strong> ${supplier}</p>
+        <p><strong>Manufacturer:</strong> ${manufacturer}</p>
+        <p><strong>Current Status:</strong> ${status}</p>
+        <h4>Tracking Details:</h4>
+        ${trackingDetails}
+    `;
+}
+
+// Simulated tracking updates
+function updateTracking(orderID, newStatus) {
+    const order = orders.find((o) => o.orderID === orderID);
+    if (order) {
+        order.tracking.push({ status: newStatus, date: new Date().toLocaleString() });
+        order.status = newStatus;
+    }
+}
+
+// Simulate updates (For testing purposes)
+setTimeout(() => updateTracking("ORD-1", "Dispatched"), 5000);
+setTimeout(() => updateTracking("ORD-1", "In Transit"), 10000);
+setTimeout(() => updateTracking("ORD-1", "Delivered"), 15000);
+// Admin data storage
+let drugs = [];
+
+// Add drug details function
+function addDrugDetails() {
+    const manufacturerName = document.getElementById("manufacturerName").value;
+    const drugDetails = document.getElementById("drugDetails").value;
+    const assignedSupplier = document.getElementById("assignSupplier").value;
+
+    if (!manufacturerName || !drugDetails || !assignedSupplier) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    const drugEntry = {
+        manufacturerName,
+        drugDetails,
+        assignedSupplier,
+        dateAdded: new Date().toLocaleString(),
+    };
+
+    drugs.push(drugEntry);
+
+    document.getElementById("adminOutput").innerHTML = `
+        <p><strong>Drug Added Successfully!</strong></p>
+        <p>Manufacturer: ${manufacturerName}</p>
+        <p>Drug Details: ${drugDetails}</p>
+        <p>Assigned Supplier: ${assignedSupplier}</p>
+        <p>Date Added: ${drugEntry.dateAdded}</p>
+    `;
+}
+
+// Update order status function
+function updateOrderStatus() {
+    const orderID = document.getElementById("orderIDAdmin").value;
+    const newStatus = document.getElementById("orderStatus").value;
+
+    if (!orderID) {
+        alert("Please enter an Order ID to update!");
+        return;
+    }
+
+    const order = orders.find((o) => o.orderID === orderID);
+
+    if (!order) {
+        document.getElementById("adminOutput").innerHTML =
+            "<p style='color:red;'>Order not found!</p>";
+        return;
+    }
+
+    // Add new status to tracking
+    order.tracking.push({ status: newStatus, date: new Date().toLocaleString() });
+    order.status = newStatus;
+
+    document.getElementById("adminOutput").innerHTML = `
+        <p><strong>Order Status Updated Successfully!</strong></p>
+        <p>Order ID: ${orderID}</p>
+        <p>New Status: ${newStatus}</p>
+        <p>Date Updated: ${new Date().toLocaleString()}</p>
+    `;
+}
+    </script>
+</body>
+</html>

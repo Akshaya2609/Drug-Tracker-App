@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Transactions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blockchain Transaction Records</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Transaction Hash</th>
+                <th>Sender Name</th>
+                <th>Recipient Name</th>
+                <th>Drug Name</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody id="transactionTable">
+            <!-- Rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Example of how you can fetch the data from localStorage and show it
+        const transactionData = JSON.parse(localStorage.getItem('transactionResult'));
+        const transactionTable = document.getElementById('transactionTable');
+        if (transactionData) {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${transactionData.sender}</td>
+                <td>${transactionData.recipient}</td>
+                <td>${transactionData.drugName}</td>
+                <td>${new Date().toLocaleString()}</td>
+            `;
+            transactionTable.appendChild(newRow);
+        }
+    </script>
+</body>
+</html>
